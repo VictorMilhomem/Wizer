@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">WizerApp</string>
+    <string name="app_name">Wizer</string>
+    <string name="default_web_client_id">1073518934244-j3apnh4n8v6hsu0nvbhi45eqg8j3i6de.apps.googleusercontent.com</string>
 </resources>
