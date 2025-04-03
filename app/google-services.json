@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "253410820879",
+    "project_id": "wizzerapp-4b649",
+    "storage_bucket": "wizzerapp-4b649.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253410820879:android:01373c25c6cfd6553f347a",
+        "android_client_info": {
+          "package_name": "com.github.wizerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5MjKpES2JUy0uCYZLtkoF0c-gWnAaRYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
