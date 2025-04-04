@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 fun CreateExerciseScreen(exerciseRepository: ExerciseRepository = ExerciseRepository()) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var subject by remember { mutableStateOf("") }
     // Para simplificar, o usuário insere as opções separadas por vírgula
     var optionsText by remember { mutableStateOf("") }
     var correctText by remember { mutableStateOf("") }
@@ -43,6 +44,12 @@ fun CreateExerciseScreen(exerciseRepository: ExerciseRepository = ExerciseReposi
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
+                value = subject,
+                onValueChange = { subject = it },
+                label = { Text("Matéria") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
                 value = optionsText,
                 onValueChange = { optionsText = it },
                 label = { Text("Opções (separadas por vírgula)") },
@@ -59,7 +66,7 @@ fun CreateExerciseScreen(exerciseRepository: ExerciseRepository = ExerciseReposi
                     val options = optionsText.split(",").map { it.trim() }
                     val correct = correctText.toIntOrNull() ?: 0
                     coroutineScope.launch {
-                        val result = exerciseRepository.createExercise(title, description, options, correct)
+                        val result = exerciseRepository.createExercise(title, description, subject,options, correct)
                         snackbarHostState.showSnackbar(
                             result.getOrElse { it.message ?: "Erro desconhecido" }
                         )

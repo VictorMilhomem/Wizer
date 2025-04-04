@@ -16,6 +16,7 @@ class ExerciseRepository {
     suspend fun createExercise(
         title: String,
         description: String,
+        subject: String,
         options: List<String>,
         correct: Int
     ): Result<String> {
@@ -28,6 +29,7 @@ class ExerciseRepository {
                 "id" to newExerciseRef.id,
                 "title" to title,
                 "description" to description,
+                "subject" to subject,
                 "options" to options,
                 "correct" to correct,
                 "createdAt" to FieldValue.serverTimestamp()
