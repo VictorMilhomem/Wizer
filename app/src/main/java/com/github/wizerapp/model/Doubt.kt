@@ -6,8 +6,8 @@ data class Doubt(
     val id: String = "",
     val studentId: String = "",
     val text: String = "",
-    val createdAt: Timestamp? = null,
+    val createdAt: Timestamp = Timestamp.now(),
     val resolved: Boolean = false,
-    val resolvedBy: String = "",
-    val solution: String = ""
+    val resolvedBy: String? = null,
+    val solution: String? = null
 )
