@@ -1,6 +1,6 @@
 [versions]
 agp = "8.8.0"
-firebaseBom = "33.12.0"
+firebaseBom = "32.1.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -40,6 +40,7 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 zxing-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingEmbedded" }
+firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

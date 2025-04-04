@@ -36,6 +36,12 @@ fun MainScreen() {
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Gerar Quiz") },
                     label = { Text("Quiz") }
                 )
+                NavigationBarItem(
+                    selected = false, // Atualize conforme o estado
+                    onClick = { navController.navigate("doubt") },
+                    icon = { Icon(Icons.Default.Edit, contentDescription = "Dúvidas") },
+                    label = { Text("Dúvidas") }
+                )
 
                 // Outras opções...
             }
@@ -49,6 +55,7 @@ fun MainScreen() {
             composable("createGroup") { CreateGroupScreen() }
             composable("createExercise") { CreateExerciseScreen() }
             composable("createQuiz") { CreateQuizScreen() }
+            composable ("doubt") { DoubtsScreen() }
 
             // Outras rotas...
         }
