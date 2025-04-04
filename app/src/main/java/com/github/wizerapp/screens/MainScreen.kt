@@ -1,4 +1,4 @@
-package com.github.wizerapp.ui
+package com.github.wizerapp.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -9,9 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.wizerapp.screens.CreateGroupScreen
-import com.github.wizerapp.screens.CreateExerciseScreen
-import com.github.wizerapp.screens.DoubtsScreen
 
 @Composable
 fun MainScreen() {
@@ -21,23 +18,26 @@ fun MainScreen() {
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    selected = false, // Atualize com base no estado de seleção
+                    selected = false, // atualize com base no estado
                     onClick = { navController.navigate("createGroup") },
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Criar Grupo") },
-                    label = { Text("Criar Grupo") }
+                    label = { Text("Grupo") }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate("createExercise") },
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Criar Exercício") },
-                    label = { Text("Criar Exercício") }
+                    label = { Text("Exercício") }
                 )
+                // Exemplo de uma NavigationBarItem no MainScreen.kt:
                 NavigationBarItem(
-                    selected = false, // Atualize conforme o estado de seleção
-                    onClick = { navController.navigate("doubts") },
-                    icon = { Icon(Icons.Default.Edit, contentDescription = "Dúvidas") },
-                    label = { Text("Dúvidas") }
+                    selected = false, // Atualize conforme o estado
+                    onClick = { navController.navigate("createQuiz") },
+                    icon = { Icon(Icons.Default.Edit, contentDescription = "Gerar Quiz") },
+                    label = { Text("Quiz") }
                 )
+
+                // Outras opções...
             }
         }
     ) { innerPadding ->
@@ -46,16 +46,11 @@ fun MainScreen() {
             startDestination = "createGroup",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("createGroup") {
-                // Sua tela de criação de grupo; você pode usar o CreateGroupScreen que já implementou
-                CreateGroupScreen()
-            }
-            composable("createExercise") {
-                CreateExerciseScreen()
-            }
-            composable("doubts") {
-                DoubtsScreen()
-            }
+            composable("createGroup") { CreateGroupScreen() }
+            composable("createExercise") { CreateExerciseScreen() }
+            composable("createQuiz") { CreateQuizScreen() }
+
+            // Outras rotas...
         }
     }
 }
