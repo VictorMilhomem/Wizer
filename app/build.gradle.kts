@@ -63,6 +63,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.analytics)
     implementation(libs.zxing.core)
     implementation (libs.zxing.embedded)
