@@ -54,7 +54,6 @@ class CreateGroupViewModel(
         maxStudentsText = max
     }
 
-    // Função para criar o grupo
     fun createGroup() {
         val minStudents = minStudentsText.toIntOrNull() ?: 0
         val maxStudents = maxStudentsText.toIntOrNull() ?: 0
@@ -67,11 +66,14 @@ class CreateGroupViewModel(
             isLoading = true
 
             try {
+                // Adicione o professorId como primeiro argumento
+                val professorId = auth.currentUser?.uid ?: return@launch
+
                 val result = groupRepository.createGroup(
+                    professorId,   // Adicione isto
                     groupName,
                     minStudents,
-                    maxStudents,
-                    subject
+                    maxStudents
                 )
 
                 if (result.isSuccess) {
