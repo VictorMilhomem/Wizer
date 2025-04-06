@@ -1,13 +1,13 @@
 package com.github.wizerapp.viewmodels
 
 import android.app.Activity
-import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.wizerapp.auth.GoogleSignInActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -17,10 +17,12 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {
-    // Estados observáveis - removendo 'private set'
+    // Estados observáveis
     var currentUser by mutableStateOf<FirebaseUser?>(null)
+        private set
 
     var isLoading by mutableStateOf(false)
+        private set
 
     // Eventos de UI
     private val _uiEvent = MutableSharedFlow<UiEvent>()
@@ -32,14 +34,23 @@ class AuthViewModel : ViewModel() {
         currentUser = Firebase.auth.currentUser
     }
 
-    fun signInWithGoogle(intent: Intent, launcher: ActivityResultLauncher<Intent>) {
-        isLoading = true
-        try {
-            launcher.launch(intent)
-        } catch (e: Exception) {
-            isLoading = false
+    // Função para iniciar login via Google
+    fun signInWithGoogle(context: Context) {
+        if (context is Activity) {
+            isLoading = true
+            try {
+                val intent = GoogleSignInActivity::class.java
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                viewModelScope.launch {
+                    _uiEvent.emit(UiEvent.Error("Erro ao iniciar login: ${e.message}"))
+                }
+            } finally {
+                isLoading = false
+            }
+        } else {
             viewModelScope.launch {
-                _uiEvent.emit(UiEvent.Error("Erro ao iniciar login: ${e.message}"))
+                _uiEvent.emit(UiEvent.Error("Contexto inválido para login"))
             }
         }
     }
@@ -65,13 +76,6 @@ class AuthViewModel : ViewModel() {
     // Função para verificar o estado da autenticação atual
     fun checkAuthState() {
         currentUser = Firebase.auth.currentUser
-    }
-
-    // Método público para emitir eventos
-    fun emitEvent(event: UiEvent) {
-        viewModelScope.launch {
-            _uiEvent.emit(event)
-        }
     }
 
     // Sealed class para eventos de UI

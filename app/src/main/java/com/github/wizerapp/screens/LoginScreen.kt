@@ -1,32 +1,24 @@
 package com.github.wizerapp.screens
 
-import android.app.Activity
-import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.wizerapp.auth.GoogleSignInActivity
 import com.github.wizerapp.viewmodels.AuthViewModel
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel = viewModel(),
@@ -35,27 +27,6 @@ fun LoginScreen(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
-    // Registrar o launcher ANTES de usá-lo
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        authViewModel.isLoading = false
-        if (result.resultCode == Activity.RESULT_OK) {
-            authViewModel.currentUser = Firebase.auth.currentUser
-
-            // Use o método emitEvent para maior segurança
-            authViewModel.emitEvent(
-                AuthViewModel.UiEvent.Success("Login realizado com sucesso")
-            )
-            onLoginSuccess()
-        } else {
-            // Use o método emitEvent para maior segurança
-            authViewModel.emitEvent(
-                AuthViewModel.UiEvent.Error("Falha no login")
-            )
-        }
-    }
 
     // Verificar se o usuário já está logado
     LaunchedEffect(authViewModel.currentUser) {
@@ -70,6 +41,9 @@ fun LoginScreen(
             when (event) {
                 is AuthViewModel.UiEvent.Success -> {
                     snackbarHostState.showSnackbar(event.message)
+                    if (authViewModel.currentUser != null) {
+                        onLoginSuccess()
+                    }
                 }
                 is AuthViewModel.UiEvent.Error -> {
                     snackbarHostState.showSnackbar(event.message)
@@ -114,7 +88,7 @@ fun LoginScreen(
                 text = "Plataforma de estudo colaborativo",
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .7f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
 
             Spacer(modifier = Modifier.height(48.dp))
@@ -122,8 +96,7 @@ fun LoginScreen(
             // Botão de login com Google
             Button(
                 onClick = {
-                    val signInIntent = Intent(context, GoogleSignInActivity::class.java)
-                    authViewModel.signInWithGoogle(signInIntent, launcher)
+                    authViewModel.signInWithGoogle(context)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -144,6 +117,7 @@ fun LoginScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        // Para o ícone do Google (você pode implementar depois)
                         Icon(
                             imageVector = Icons.Filled.Person,
                             contentDescription = "Google",
