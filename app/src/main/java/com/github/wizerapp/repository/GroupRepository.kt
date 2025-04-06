@@ -13,6 +13,7 @@ class GroupRepository {
     }
 
     suspend fun createGroup(
+        professorId: String,
         name: String,
         minStudents: Int,
         maxStudents: Int
@@ -21,7 +22,7 @@ class GroupRepository {
             // Cria um novo documento para o grupo, com um ID gerado automaticamente
             val newGroupRef = firestore.collection("groups").document()
 
-            // Monta os dados do grupo utilizando FieldValue.serverTimestamp()
+            // Monta os dados do grupo utilizando FieldValue.serverTimestamp() para o campo createdAt
             val groupData = hashMapOf(
                 "id" to newGroupRef.id,
                 "name" to name,
@@ -31,9 +32,15 @@ class GroupRepository {
                 "createdAt" to FieldValue.serverTimestamp()
             )
 
-            // Salva os dados no Firestore
+            // Salva os dados no Firestore na coleção "groups"
             newGroupRef.set(groupData).await()
-            Result.success("Grupo criado com sucesso!")
+
+            // Atualiza o documento do professor na coleção "professors", adicionando o novo grupo ao campo "groups"
+            firestore.collection("professors").document(professorId)
+                .update("groups", FieldValue.arrayUnion(newGroupRef.id))
+                .await()
+
+            Result.success(newGroupRef.id)
         } catch (e: Exception) {
             Result.failure(e)
         }
