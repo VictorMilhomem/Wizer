@@ -1,5 +1,6 @@
 package com.github.wizerapp.auth
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -11,12 +12,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
-import androidx.activity.result.contract.ActivityResultContracts
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -27,7 +23,6 @@ import com.google.firebase.auth.auth
 import com.google.firebase.Firebase
 import com.github.wizerapp.R
 import kotlinx.coroutines.launch
-
 
 class GoogleSignInActivity : AppCompatActivity() {
 
@@ -40,21 +35,21 @@ class GoogleSignInActivity : AppCompatActivity() {
         auth = Firebase.auth
         credentialManager = CredentialManager.create(baseContext)
 
-        launchCredentialManager()
+        // Configuração do Google Sign-In Options
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        // Inicia o processo de login
+        initiateGoogleSignIn()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
-    }
-
-
-    private fun launchCredentialManager() {
+    private fun initiateGoogleSignIn() {
         val googleIdOption = GetGoogleIdOption.Builder()
             .setServerClientId(getString(R.string.default_web_client_id))
-            .setFilterByAuthorizedAccounts(true)
+            .setFilterByAuthorizedAccounts(false)  // Permitir selecionar conta
+            .setAutoSelectEnabled(false)  // Não selecionar automaticamente
             .build()
 
         val request = GetCredentialRequest.Builder()
@@ -71,20 +66,30 @@ class GoogleSignInActivity : AppCompatActivity() {
                 handleSignIn(result.credential)
             } catch (e: GetCredentialException) {
                 Log.e(TAG, "Couldn't retrieve user's credentials: ${e.localizedMessage}")
+                setResult(Activity.RESULT_CANCELED)
+                finish()
             }
         }
     }
 
     private fun handleSignIn(credential: Credential) {
-        // Check if credential is of type Google ID
+        // Verifica se a credencial é do Google
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            // Create Google ID Token
-            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+            try {
+                // Cria credencial do Google ID Token
+                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
 
-            // Sign in to Firebase with using the token
-            firebaseAuthWithGoogle(googleIdTokenCredential.idToken)
+                // Autentica no Firebase
+                firebaseAuthWithGoogle(googleIdTokenCredential.idToken)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error creating Google ID Token: ${e.localizedMessage}")
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
         } else {
             Log.w(TAG, "Credential is not of type Google ID!")
+            setResult(Activity.RESULT_CANCELED)
+            finish()
         }
     }
 
@@ -95,36 +100,17 @@ class GoogleSignInActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
-                    updateUI(user)
+                    setResult(Activity.RESULT_OK)
+                    finish()
                 } else {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    updateUI(null)
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
                 }
             }
     }
 
-    private fun signOut() {
-        auth.signOut()
-
-        lifecycleScope.launch {
-            try {
-                val clearRequest = ClearCredentialStateRequest()
-                credentialManager.clearCredentialState(clearRequest)
-                updateUI(null)
-            } catch (e: ClearCredentialException) {
-                Log.e(TAG, "Couldn't clear user credentials: ${e.localizedMessage}")
-            }
-        }
-    }
-
-    private fun updateUI(user: FirebaseUser?) {
-    }
-
-    fun getCurrentUser(): FirebaseUser? {
-        return auth.currentUser
-    }
-
     companion object {
-        private const val TAG = "GoogleActivity"
+        private const val TAG = "GoogleSignInActivity"
     }
 }
