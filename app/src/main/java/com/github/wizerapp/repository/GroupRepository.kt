@@ -15,8 +15,7 @@ class GroupRepository {
     suspend fun createGroup(
         name: String,
         minStudents: Int,
-        maxStudents: Int,
-        subject: String
+        maxStudents: Int
     ): Result<String> {
         return try {
             // Cria um novo documento para o grupo, com um ID gerado automaticamente
@@ -28,7 +27,6 @@ class GroupRepository {
                 "name" to name,
                 "minStudents" to minStudents,
                 "maxStudents" to maxStudents,
-                "subject" to subject,
                 "totalScore" to 0,
                 "createdAt" to FieldValue.serverTimestamp()
             )
