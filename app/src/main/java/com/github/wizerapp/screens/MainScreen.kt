@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     WizerAppTheme {

@@ -84,3 +84,7 @@ class AuthViewModel : ViewModel() {
         data class Error(val message: String) : UiEvent()
     }
 }
+
+private fun Activity.startActivity(intent: Class<GoogleSignInActivity>) {
+
+}

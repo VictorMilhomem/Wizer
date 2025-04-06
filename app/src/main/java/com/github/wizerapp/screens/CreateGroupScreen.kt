@@ -31,13 +31,14 @@ fun CreateGroupScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    // Coletar eventos do ViewModel
+// Coletar eventos do ViewModel
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
                 is CreateGroupViewModel.UiEvent.Success -> {
                     snackbarHostState.showSnackbar(event.message)
                 }
+
                 is CreateGroupViewModel.UiEvent.Error -> {
                     snackbarHostState.showSnackbar(event.message)
                 }
@@ -83,27 +84,24 @@ fun CreateGroupScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Botão de criar grupo
-                    Button(
-                        onClick = { viewModel.createGroup() },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        enabled = !viewModel.isLoading
-                    ) {
-                        if (viewModel.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        } else {
-                            Text("Criar Grupo")
-                        }
-                    }
+            // Botão de criar grupo
+            Button(
+                onClick = { viewModel.createGroup() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                enabled = !viewModel.isLoading
+            ) {
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text("Criar Grupo")
                 }
             }
         }
@@ -133,7 +131,7 @@ fun CustomTextField(
         placeholder = { Text(placeholder) },
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outline,
             cursorColor = MaterialTheme.colorScheme.primary

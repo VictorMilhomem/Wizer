@@ -1,0 +1,73 @@
+Index: app/src/main/java/com/github/wizerapp/auth/GoogleSignInActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.github.wizerapp.auth\r\n\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport androidx.credentials.ClearCredentialStateRequest\r\nimport androidx.credentials.Credential\r\nimport androidx.credentials.CredentialManager\r\nimport androidx.credentials.CustomCredential\r\nimport androidx.credentials.GetCredentialRequest\r\nimport androidx.credentials.exceptions.ClearCredentialException\r\nimport androidx.credentials.exceptions.GetCredentialException\r\nimport androidx.lifecycle.lifecycleScope\r\nimport com.google.android.libraries.identity.googleid.GetGoogleIdOption\r\nimport com.google.android.libraries.identity.googleid.GoogleIdTokenCredential\r\nimport com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.google.firebase.auth.FirebaseUser\r\nimport com.google.firebase.auth.GoogleAuthProvider\r\nimport com.google.firebase.auth.auth\r\nimport com.google.firebase.Firebase\r\nimport com.github.wizerapp.R\r\nimport kotlinx.coroutines.launch\r\n\r\n\r\nclass GoogleSignInActivity : AppCompatActivity() {\r\n\r\n    private lateinit var auth: FirebaseAuth\r\n    private lateinit var credentialManager: CredentialManager\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n\r\n        auth = Firebase.auth\r\n        credentialManager = CredentialManager.create(baseContext)\r\n\r\n        launchCredentialManager()\r\n    }\r\n\r\n    override fun onStart() {\r\n        super.onStart()\r\n\r\n        val currentUser = auth.currentUser\r\n        updateUI(currentUser)\r\n    }\r\n\r\n\r\n    private fun launchCredentialManager() {\r\n        val googleIdOption = GetGoogleIdOption.Builder()\r\n            .setServerClientId(getString(R.string.default_web_client_id))\r\n            .setFilterByAuthorizedAccounts(true)\r\n            .build()\r\n\r\n        val request = GetCredentialRequest.Builder()\r\n            .addCredentialOption(googleIdOption)\r\n            .build()\r\n\r\n        lifecycleScope.launch {\r\n            try {\r\n                val result = credentialManager.getCredential(\r\n                    context = baseContext,\r\n                    request = request\r\n                )\r\n\r\n                handleSignIn(result.credential)\r\n            } catch (e: GetCredentialException) {\r\n                Log.e(TAG, \"Couldn't retrieve user's credentials: ${e.localizedMessage}\")\r\n            }\r\n        }\r\n    }\r\n\r\n    private fun handleSignIn(credential: Credential) {\r\n        // Check if credential is of type Google ID\r\n        if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {\r\n            // Create Google ID Token\r\n            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)\r\n\r\n            // Sign in to Firebase with using the token\r\n            firebaseAuthWithGoogle(googleIdTokenCredential.idToken)\r\n        } else {\r\n            Log.w(TAG, \"Credential is not of type Google ID!\")\r\n        }\r\n    }\r\n\r\n    private fun firebaseAuthWithGoogle(idToken: String) {\r\n        val credential = GoogleAuthProvider.getCredential(idToken, null)\r\n        auth.signInWithCredential(credential)\r\n            .addOnCompleteListener(this) { task ->\r\n                if (task.isSuccessful) {\r\n                    Log.d(TAG, \"signInWithCredential:success\")\r\n                    val user = auth.currentUser\r\n                    updateUI(user)\r\n                } else {\r\n                    Log.w(TAG, \"signInWithCredential:failure\", task.exception)\r\n                    updateUI(null)\r\n                }\r\n            }\r\n    }\r\n\r\n    private fun signOut() {\r\n        auth.signOut()\r\n\r\n        lifecycleScope.launch {\r\n            try {\r\n                val clearRequest = ClearCredentialStateRequest()\r\n                credentialManager.clearCredentialState(clearRequest)\r\n                updateUI(null)\r\n            } catch (e: ClearCredentialException) {\r\n                Log.e(TAG, \"Couldn't clear user credentials: ${e.localizedMessage}\")\r\n            }\r\n        }\r\n    }\r\n\r\n    private fun updateUI(user: FirebaseUser?) {\r\n    }\r\n\r\n    fun getCurrentUser(): FirebaseUser? {\r\n        return auth.currentUser\r\n    }\r\n\r\n    companion object {\r\n        private const val TAG = \"GoogleActivity\"\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/github/wizerapp/auth/GoogleSignInActivity.kt b/app/src/main/java/com/github/wizerapp/auth/GoogleSignInActivity.kt
+--- a/app/src/main/java/com/github/wizerapp/auth/GoogleSignInActivity.kt	(revision ca34056d691aae45f5769d156c30375e05def054)
++++ b/app/src/main/java/com/github/wizerapp/auth/GoogleSignInActivity.kt	(date 1743965658367)
+@@ -111,7 +111,8 @@
+         }
+     }
+ 
+-    private fun updateUI(user: FirebaseUser?) {
++    private fun updateUI(user:
++                         FirebaseUser?) {
+     }
+ 
+     fun getCurrentUser(): FirebaseUser? {
+Index: gradle/libs.versions.toml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>[versions]\r\nagp = \"8.8.0\"\r\nfirebaseBom = \"32.1.1\"\r\nkotlin = \"2.0.0\"\r\ncoreKtx = \"1.15.0\"\r\njunit = \"4.13.2\"\r\njunitVersion = \"1.2.1\"\r\nespressoCore = \"3.6.1\"\r\nlifecycleRuntimeKtx = \"2.8.7\"\r\nactivityCompose = \"1.10.0\"\r\ncomposeBom = \"2024.04.01\"\r\nfirebaseAuthKtx = \"23.2.0\"\r\nfirebaseFirestoreKtx = \"25.1.3\"\r\nnavigationCompose = \"2.8.9\"\r\nappcompat = \"1.7.0\"\r\ngoogleid = \"1.1.1\"\r\nfirebaseFirestoreKtxVersion = \"25.1.3\"\r\nnavigationComposeVersion = \"2.8.9\"\r\nzxing = \"3.4.1\"\r\nzxingEmbedded = \"4.3.0\"\r\n\r\n[libraries]\r\nandroidx-core-ktx = { group = \"androidx.core\", name = \"core-ktx\", version.ref = \"coreKtx\" }\r\nfirebase-analytics = { module = \"com.google.firebase:firebase-analytics\" }\r\nfirebase-bom = { module = \"com.google.firebase:firebase-bom\", version.ref = \"firebaseBom\" }\r\njunit = { group = \"junit\", name = \"junit\", version.ref = \"junit\" }\r\nandroidx-junit = { group = \"androidx.test.ext\", name = \"junit\", version.ref = \"junitVersion\" }\r\nandroidx-espresso-core = { group = \"androidx.test.espresso\", name = \"espresso-core\", version.ref = \"espressoCore\" }\r\nandroidx-lifecycle-runtime-ktx = { group = \"androidx.lifecycle\", name = \"lifecycle-runtime-ktx\", version.ref = \"lifecycleRuntimeKtx\" }\r\nandroidx-activity-compose = { group = \"androidx.activity\", name = \"activity-compose\", version.ref = \"activityCompose\" }\r\nandroidx-compose-bom = { group = \"androidx.compose\", name = \"compose-bom\", version.ref = \"composeBom\" }\r\nandroidx-ui = { group = \"androidx.compose.ui\", name = \"ui\" }\r\nandroidx-ui-graphics = { group = \"androidx.compose.ui\", name = \"ui-graphics\" }\r\nandroidx-ui-tooling = { group = \"androidx.compose.ui\", name = \"ui-tooling\" }\r\nandroidx-ui-tooling-preview = { group = \"androidx.compose.ui\", name = \"ui-tooling-preview\" }\r\nandroidx-ui-test-manifest = { group = \"androidx.compose.ui\", name = \"ui-test-manifest\" }\r\nandroidx-ui-test-junit4 = { group = \"androidx.compose.ui\", name = \"ui-test-junit4\" }\r\nandroidx-material3 = { group = \"androidx.compose.material3\", name = \"material3\" }\r\nfirebase-firestore-ktx = { group = \"com.google.firebase\", name = \"firebase-firestore-ktx\", version.ref = \"firebaseFirestoreKtxVersion\" }\r\nandroidx-navigation-compose = { group = \"androidx.navigation\", name = \"navigation-compose\", version.ref = \"navigationComposeVersion\" }\r\nzxing-core = { module = \"com.google.zxing:core\", version.ref = \"zxing\" }\r\nzxing-embedded = { module = \"com.journeyapps:zxing-android-embedded\", version.ref = \"zxingEmbedded\" }\r\nfirebase-storage-ktx = { module = \"com.google.firebase:firebase-storage-ktx\"}\r\n\r\n[plugins]\r\nandroid-application = { id = \"com.android.application\", version.ref = \"agp\" }\r\nkotlin-android = { id = \"org.jetbrains.kotlin.android\", version.ref = \"kotlin\" }\r\nkotlin-compose = { id = \"org.jetbrains.kotlin.plugin.compose\", version.ref = \"kotlin\" }\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
+--- a/gradle/libs.versions.toml	(revision ca34056d691aae45f5769d156c30375e05def054)
++++ b/gradle/libs.versions.toml	(date 1743805084832)
+@@ -18,6 +18,10 @@
+ navigationComposeVersion = "2.8.9"
+ zxing = "3.4.1"
+ zxingEmbedded = "4.3.0"
++appcompatVersion = "1.7.0"
++credentials = "1.5.0"
++googleidVersion = "1.1.1"
++firebaseAuthKtxVersion = "23.2.0"
+ 
+ [libraries]
+ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+@@ -41,6 +45,10 @@
+ zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
+ zxing-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingEmbedded" }
+ firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx"}
++androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
++androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
++googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleidVersion" }
++firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtxVersion" }
+ 
+ [plugins]
+ android-application = { id = "com.android.application", version.ref = "agp" }
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	(revision ca34056d691aae45f5769d156c30375e05def054)
++++ b/.idea/deploymentTargetSelector.xml	(date 1743780597616)
+@@ -5,6 +5,9 @@
+       <SelectionState runConfigName="app">
+         <option name="selectionMode" value="DROPDOWN" />
+       </SelectionState>
++      <SelectionState runConfigName="MainActivity">
++        <option name="selectionMode" value="DROPDOWN" />
++      </SelectionState>
+     </selectionStates>
+   </component>
+ </project>
+\ No newline at end of file

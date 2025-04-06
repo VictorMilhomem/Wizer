@@ -45,7 +45,8 @@ android {
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)
         implementation(libs.androidx.activity.compose)
-
+        implementation(libs.androidx.material.icons.extended)
+        implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
         // AppCompat (deve ter uma entrada no seu toml)
         implementation("androidx.appcompat:appcompat:1.6.1")
 
@@ -65,6 +66,11 @@ android {
         // ZXing para QR Code
         implementation("com.google.zxing:core:3.5.2")
         implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+        implementation(libs.androidx.foundation.android)
+        implementation(libs.androidx.material3.android)
+        implementation(libs.androidx.navigation.common.ktx)
+        implementation(libs.androidx.navigation.runtime.ktx)
+        implementation(libs.androidx.navigation.compose)
 
         // Testing
         testImplementation(libs.junit)

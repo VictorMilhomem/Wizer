@@ -382,7 +382,7 @@ fun DoubtItemCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                        colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.outline
                         )
