@@ -59,7 +59,7 @@ fun CreateGroupScreen(groupRepository: GroupRepository = GroupRepository()) {
                     val maxStudents = maxStudentsText.toIntOrNull() ?: 0
 
                     coroutineScope.launch {
-                        val result = groupRepository.createGroup(groupName, minStudents, maxStudents, subject)
+                        val result = groupRepository.createGroup(groupName, minStudents, maxStudents)
                         val message = if (result.isSuccess) {
                             result.getOrNull() ?: "Grupo criado com sucesso!"
                         } else {
