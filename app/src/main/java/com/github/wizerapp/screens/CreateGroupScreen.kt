@@ -83,61 +83,6 @@ fun CreateGroupScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Formulário para criar grupo
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Campo de nome do grupo
-                    CustomTextField(
-                        value = viewModel.groupName,
-                        onValueChange = { viewModel.updateGroupName(it) },
-                        label = "Nome do Grupo",
-                        leadingIcon = Icons.Filled.Groups,
-                        placeholder = "Ex: Grupo de Cálculo I"
-                    )
-
-                    // Campo de matéria
-                    CustomTextField(
-                        value = viewModel.subject,
-                        onValueChange = { viewModel.updateSubject(it) },
-                        label = "Matéria",
-                        leadingIcon = Icons.Filled.School,
-                        placeholder = "Ex: Matemática, Física, etc."
-                    )
-
-                    // Número mínimo e máximo de alunos em linha
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        // Campo de mínimo de alunos
-                        CustomTextField(
-                            value = viewModel.minStudentsText,
-                            onValueChange = { viewModel.updateMinStudents(it) },
-                            label = "Mínimo de Alunos",
-                            leadingIcon = Icons.Outlined.Person,
-                            placeholder = "Ex: 5",
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        // Campo de máximo de alunos
-                        CustomTextField(
-                            value = viewModel.maxStudentsText,
-                            onValueChange = { viewModel.updateMaxStudents(it) },
-                            label = "Máximo de Alunos",
-                            leadingIcon = Icons.Outlined.PersonAdd,
-                            placeholder = "Ex: 15",
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
