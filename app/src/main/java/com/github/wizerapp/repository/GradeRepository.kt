@@ -16,6 +16,7 @@ class GradeRepository(
             val gradeData = hashMapOf(
                 "studentId" to grade.studentId,
                 "exerciseId" to grade.exerciseId,
+                "studentAnswer" to grade.studentAnswer,
                 "score" to grade.score,
                 "submittedAt" to grade.submittedAt
             )

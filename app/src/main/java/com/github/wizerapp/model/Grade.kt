@@ -6,6 +6,7 @@ data class Grade(
     val id: String = "",
     val studentId: String = "",
     val exerciseId: String = "",
+    val studentAnswer: Int = -1,
     val score: Int = 0,
     val submittedAt: Timestamp = Timestamp.now()
 )
