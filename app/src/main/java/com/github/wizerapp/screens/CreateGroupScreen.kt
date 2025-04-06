@@ -22,6 +22,7 @@ import com.github.wizerapp.viewmodels.CreateGroupViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateGroupScreen(
     viewModel: CreateGroupViewModel = viewModel(),
@@ -165,6 +166,7 @@ fun CreateGroupScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTextField(
     value: String,

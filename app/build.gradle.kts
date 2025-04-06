@@ -54,8 +54,13 @@ android {
         implementation(libs.androidx.material3)
         implementation(libs.androidx.navigation.compose)
 
+        implementation("androidx.compose.material:material-icons-extended:1.6.1")
+        implementation("androidx.credentials:credentials-play-services-auth:1.2.0")
+        implementation("com.google.android.gms:play-services-auth:20.7.0")
+
         // AppCompat (deve ter uma entrada no seu toml)
         implementation("androidx.appcompat:appcompat:1.6.1")
+        // Adicione esta dependência no build.gradle.kts do módulo app
 
         // Firebase
         implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
@@ -66,9 +71,7 @@ android {
 
         // Autenticação Google
         implementation("androidx.credentials:credentials:1.2.0")
-        implementation("androidx.credentials:credentials-play-services-auth:1.2.0")
         implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
-        implementation("com.google.android.gms:play-services-auth:20.7.0")
 
         // ZXing para QR Code
         implementation("com.google.zxing:core:3.5.2")

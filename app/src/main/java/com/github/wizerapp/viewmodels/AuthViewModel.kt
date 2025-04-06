@@ -2,6 +2,7 @@ package com.github.wizerapp.viewmodels
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -39,7 +40,7 @@ class AuthViewModel : ViewModel() {
         if (context is Activity) {
             isLoading = true
             try {
-                val intent = GoogleSignInActivity::class.java
+                val intent = Intent(context, GoogleSignInActivity::class.java)
                 context.startActivity(intent)
             } catch (e: Exception) {
                 viewModelScope.launch {
