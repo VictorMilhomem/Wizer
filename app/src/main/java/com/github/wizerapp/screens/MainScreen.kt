@@ -26,7 +26,7 @@ import com.google.firebase.ktx.Firebase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(initialQuizId: String = "") {
     WizerAppTheme {
         val authViewModel: AuthViewModel = viewModel()
         var isLoggedIn by remember { mutableStateOf(false) }
@@ -55,6 +55,12 @@ fun MainScreen() {
                 Screen.CreateQuiz,
                 Screen.Doubts
             )
+
+            LaunchedEffect(initialQuizId) {
+                if (initialQuizId.isNotBlank()) {
+                    navController.navigate("studentQuiz/$initialQuizId")
+                }
+            }
 
             Scaffold(
                 topBar = {
@@ -135,6 +141,11 @@ fun MainScreen() {
                     composable(Screen.CreateExercise.route) { CreateExerciseScreen() }
                     composable(Screen.CreateQuiz.route) { CreateQuizScreen() }
                     composable(Screen.Doubts.route) { DoubtsScreen() }
+                    composable("studentQuiz/{quizId}") { backStackEntry ->
+                        val quizId = backStackEntry.arguments?.getString("quizId") ?: ""
+                        StudentQuizScreen(quizId = quizId)
+                    }
+
                 }
             }
         }

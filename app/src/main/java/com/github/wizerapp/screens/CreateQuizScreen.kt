@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.github.wizerapp.utils.generateCustomQuizLink
 import com.github.wizerapp.utils.generateQRCodeBitmap
 import com.github.wizerapp.viewmodels.CreateQuizViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -212,7 +213,8 @@ fun CreateQuizScreen(
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 // Gerar e exibir o QR Code
-                                val qrBitmap = generateQRCodeBitmap(quiz.qrCode)
+                                val customLink = generateCustomQuizLink(quiz.id)
+                                val qrBitmap = generateQRCodeBitmap(customLink.toString())
                                 qrBitmap?.let {
                                     Image(
                                         bitmap = it.asImageBitmap(),

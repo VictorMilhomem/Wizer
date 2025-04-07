@@ -19,6 +19,7 @@
             android:theme="@style/Theme.WizerApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <data android:scheme="wizerapp" android:host="quiz" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
